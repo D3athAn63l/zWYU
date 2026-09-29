@@ -1,0 +1,91 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    zWYU: RimWorld 1.6 port of "While You're Up" (see NOTICE / LICENSE; AGPL-3.0-or-later).
+
+    Reference assemblies (two supported modes, no machine-specific paths are committed):
+
+      1. Default: the Krafs.Rimworld.Ref NuGet package (metadata-only 1.6 reference assemblies).
+         Nothing to install, nothing from Ludeon is stored in this repository.
+             dotnet build Source/zWYU/zWYU.csproj -c Release
+
+      2. Actual game assemblies: point RimWorldManagedDir at a "Managed" folder
+         (e.g. <RimWorld>/RimWorldWin64_Data/Managed). Use this to compile against the exact
+         build you play, or to run the PatchAudit tool. It can be passed on the command line or
+         set in an uncommitted Source/Directory.Build.props.user / environment variable.
+             dotnet build Source/zWYU/zWYU.csproj -c Release -p:RimWorldManagedDir=/path/to/Managed
+
+    Harmony is compile-only (ExcludeAssets=runtime): at runtime the Harmony mod provides 0Harmony.dll.
+    The built assembly is written to <repo>/1.6/Assemblies/.
+  -->
+
+  <PropertyGroup>
+    <AssemblyName>zWYU</AssemblyName>
+    <RootNamespace>zWYU</RootNamespace>
+    <TargetFramework>net472</TargetFramework>
+    <LangVersion>10.0</LangVersion>
+    <Nullable>disable</Nullable>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Optimize Condition="'$(Configuration)' == 'Release'">true</Optimize>
+    <DebugType>full</DebugType>
+    <Deterministic>true</Deterministic>
+    <PublicizeAsReferenceAssemblies>false</PublicizeAsReferenceAssemblies>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <OutputPath>$(MSBuildThisFileDirectory)..\..\1.6\Assemblies\</OutputPath>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <Version>0.1.0</Version>
+    <Authors>D3athAn63l; original While You're Up by Christopher S. Galpin (CodeOptimist)</Authors>
+    <Copyright>Copyright (C) 2020 Christopher S. Galpin; zWYU modifications (C) 2026 D3athAn63l. AGPL-3.0-or-later.</Copyright>
+    <RepositoryUrl>https://github.com/D3athAn63l/zWYU</RepositoryUrl>
+    <EnvironmentVariable_RimWorldManagedDir>$([System.Environment]::GetEnvironmentVariable('RIMWORLD_MANAGED_DIR'))</EnvironmentVariable_RimWorldManagedDir>
+    <RimWorldManagedDir Condition="'$(RimWorldManagedDir)' == ''">$(EnvironmentVariable_RimWorldManagedDir)</RimWorldManagedDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Lib.Harmony" Version="2.4.1" ExcludeAssets="runtime" />
+    <PackageReference Include="Krafs.Publicizer" Version="2.3.0" PrivateAssets="all" />
+    <Publicize Include="Assembly-CSharp" />
+  </ItemGroup>
+
+  <!-- Mode 1: reference-assembly NuGet package -->
+  <ItemGroup Condition="'$(RimWorldManagedDir)' == ''">
+    <PackageReference Include="Krafs.Rimworld.Ref" Version="1.6.4871" />
+  </ItemGroup>
+
+  <!-- Mode 2: actual game assemblies (explicit allow-list: never reference Unity's mscorlib/System*) -->
+  <ItemGroup Condition="'$(RimWorldManagedDir)' != ''">
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(RimWorldManagedDir)/Assembly-CSharp.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Assembly-CSharp-firstpass" Condition="Exists('$(RimWorldManagedDir)/Assembly-CSharp-firstpass.dll')">
+      <HintPath>$(RimWorldManagedDir)/Assembly-CSharp-firstpass.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>$(RimWorldManagedDir)/UnityEngine.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(RimWorldManagedDir)/UnityEngine.CoreModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>$(RimWorldManagedDir)/UnityEngine.IMGUIModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>$(RimWorldManagedDir)/UnityEngine.TextRenderingModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Unity.Collections" Condition="Exists('$(RimWorldManagedDir)/Unity.Collections.dll')">
+      <HintPath>$(RimWorldManagedDir)/Unity.Collections.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Unity.Mathematics" Condition="Exists('$(RimWorldManagedDir)/Unity.Mathematics.dll')">
+      <HintPath>$(RimWorldManagedDir)/Unity.Mathematics.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+</Project>

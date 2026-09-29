@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+  <name>zWYU (While You're Up)</name>
+  <author>D3athAn63l (RimWorld 1.6 port) - original mod by Christopher S. Galpin (CodeOptimist)</author>
+  <packageId>D3athAn63l.zWYU</packageId>
+  <url>https://github.com/D3athAn63l/zWYU</url>
+  <supportedVersions>
+    <li>1.6</li>
+  </supportedVersions>
+  <modDependencies>
+    <li>
+      <packageId>brrainz.harmony</packageId>
+      <displayName>Harmony</displayName>
+      <steamWorkshopUrl>steam://url/CommunityFilePage/2009463077</steamWorkshopUrl>
+      <downloadUrl>https://github.com/pardeike/HarmonyRimWorld/releases/latest</downloadUrl>
+    </li>
+  </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+  </loadAfter>
+  <incompatibleWith>
+    <li>CodeOptimist.JobsOfOpportunity</li>
+    <li>hoodie.whileyoureup</li>
+    <li>kevlou127.WhileHYouOreHUpHQ1V0S</li>
+  </incompatibleWith>
+  <description>Opportunistic hauling. While a colonist is already walking somewhere useful, they take a worthwhile haul along the way.
+
+zWYU is a RimWorld 1.6 modernization of "While You're Up" (also known as "Jobs of Opportunity") by Christopher S. Galpin (CodeOptimist). It is a derived port, not an unrelated mod: the idea, settings and rules are the original's. This first version is a deliberately conservative BASELINE: the original behavior on 1.6, made stable and observable, so that its exact semantics can be studied. It is not an optimization pass.
+
+What it does
+- Opportunities ("... on the way to ..."): a pawn about to do a distant job may first haul a nearby item to storage when the extra distance stays within configurable limits (start to item, item to storage, storage to job, total trip). Vanilla queues the original job first, so the pawn resumes it afterwards.
+- Supplies &amp; ingredients ("..., headed closer to ..."): a builder or crafter fetching construction supplies or bill ingredients first hauls them (with extras) to storage nearer the site, when that shortens the carry.
+- Skipped while bleeding (ordinary opportunities), preparing a caravan, drafted, downed, in a mental state, or when the player gave the order.
+- Per-storage-building filters, stockpile switches, and three path-checking modes (vanilla-style, pathfind once after search, pathfind during search).
+
+Requirements: Harmony. Pick Up And Haul and Common Sense are optional; see the README for what "compatible" means in this baseline (PUAH+ enhancements from the original are not part of it).
+
+Diagnostics: mod settings, "Debug logging" (Off / Summary / Verbose). If a feature cannot hook into the game it disables itself, says so in the log and in the settings window, and vanilla behavior remains.
+
+Source: https://github.com/D3athAn63l/zWYU
+Original: https://github.com/CodeOptimist/rimworld-while-youre-up (and https://github.com/CodeOptimist/rimworld-codeoptimist-library)
+License: GNU Affero General Public License v3.0 or later (as the original). The complete corresponding source is at the link above. See LICENSE and NOTICE.</description>
+</ModMetaData>

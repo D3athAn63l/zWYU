@@ -1,0 +1,76 @@
+zWYU - While You're Up, for RimWorld 1.6
+========================================
+
+zWYU is a DERIVED WORK: a modernization / port of the RimWorld mod "While You're Up"
+(a.k.a. "Jobs of Opportunity", "While You're Up / PUAH+") to RimWorld 1.6.
+It is not an unrelated original invention. The concepts, settings, defaults, geometry rules and
+many code fragments originate from that mod, and are used under its license (below).
+
+Original work
+-------------
+  While You're Up
+    Copyright (C) 2020  Christopher S. Galpin (CodeOptimist)
+    https://github.com/CodeOptimist/rimworld-while-youre-up
+    Baseline used for this port: master @ 1c54e7c31e2d3d167a94e3723891a6bf7cdfe536 (v4.0.4, RimWorld 1.4)
+    License: GNU Affero General Public License v3.0 or later
+
+  CodeOptimist RimWorld library (helper code merged into the original mod's DLL)
+    Copyright (C) 2020  Christopher S. Galpin (CodeOptimist)
+    https://github.com/CodeOptimist/rimworld-codeoptimist-library
+    Baseline used for this port: master @ 892b8b107a15b4123c8f547c3a4e23b0ce7dc264
+    License: GNU Affero General Public License v3.0 or later
+    Parts retained in this repository (see docs/LIBRARY_AUDIT.md):
+      Source/zWYU/Lib/CodeOptimist/Gui.cs         (settings-widget helpers; adapted)
+      Source/zWYU/Lib/CodeOptimist/Extensions.cs  (translation / math helpers; adapted)
+
+The original author's statement, reproduced from the original NOTICE file:
+
+  "Ludeon has my blessing to incorporate anything here into the core game.
+   Attribution is at their discretion: few changes warrant it.
+   (Permission is already obtained via RimWorld's EULA.)"
+
+The original NOTICE text (copyright + AGPL grant) is as follows:
+
+  Copyright (C) 2020  Christopher S. Galpin
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+This port
+---------
+  zWYU
+    Modifications Copyright (C) 2026  D3athAn63l
+    https://github.com/D3athAn63l/zWYU
+    License: GNU Affero General Public License v3.0 or later (same as the original; see LICENSE).
+
+Because the original is AGPL-3.0-or-later, this whole project is AGPL-3.0-or-later. If you distribute the
+compiled mod (zWYU.dll) you must make the corresponding source available under the same terms; this
+repository is that source. Source files that are derived from, or that carry code adapted from, the
+original say so in their header.
+
+Changes relative to the original (summary; the full account is in docs/PORTING_NOTES.md):
+  * Ported from RimWorld 1.4 to RimWorld 1.6 (changed vanilla signatures, pathfinding API, storage search).
+  * Harmony IL transpilers replaced by semantic prefix/postfix/finalizer hooks with failure-safe gating.
+  * Detour bookkeeping rewritten around explicit per-pawn plans with a defined lifecycle.
+  * Pick Up And Haul integration ("PUAH+") is NOT part of this baseline; see README.
+  * The CodeOptimist library is not merged as a separate DLL; only the parts actually needed are carried.
+  * New package id and new identity: this is a separate project. The original Steam Workshop
+    PublishedFileId is deliberately not reused.
+
+Not part of this repository
+---------------------------
+  * RimWorld / Ludeon Studios assemblies and content. Compile against your own installation
+    (-p:RimWorldManagedDir=...) or the Krafs.Rimworld.Ref reference-assembly NuGet package.
+  * Harmony (Andreas Pardeike, MIT) is required at runtime via the Harmony mod (brrainz.harmony) and
+    referenced at build time through the Lib.Harmony NuGet package (compile-only).
+  * Krafs.Publicizer (Krafs, MIT) is used at build time only.
