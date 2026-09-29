@@ -74,6 +74,12 @@ namespace zWYU
             Diag.Error(Diag.Compat, $"exception in {where} (feature '{feature}', fault {count}/{FaultBudget}); this call fell back to vanilla behavior.", exception);
         }
 
+        /// <summary>Switch every feature off (used only if startup itself fails, so that a half-applied hook is inert).</summary>
+        public static void DisableAll(string reason, Exception exception = null) {
+            for (var i = 0; i < Count; i++)
+                Disable((Feature)i, "startup", reason, i == 0 ? exception : null);
+        }
+
         public static IEnumerable<KeyValuePair<Feature, string>> DisabledFeatures() {
             for (var i = 0; i < Count; i++) {
                 if (disabled[i])

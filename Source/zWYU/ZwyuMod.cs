@@ -36,16 +36,27 @@ namespace zWYU
                 Settings = new ZwyuSettings();
             }
 
-            PickUpAndHaulCompat.Init();
-            CommonSenseCompat.Init();
-            PatchBootstrap.Apply(Harmony);
+            try {
+                PickUpAndHaulCompat.Init();
+                CommonSenseCompat.Init();
+                PatchBootstrap.Apply(Harmony);
 
-            Diag.Info(Diag.Startup, PatchBootstrap.StatusLine());
+                Diag.Info(Diag.Startup, PatchBootstrap.StatusLine());
+            } catch (Exception e) {
+                // Last line of defense: nothing above is expected to throw (each step contains its own failures), but a mod
+                // constructor that throws would break mod loading. Leave every feature off so any half-applied hook is inert.
+                Features.DisableAll("unexpected failure during startup", e);
+            }
         }
 
         // name in "Mod options" and top of settings window
         public override string SettingsCategory() => "zWYU (While You're Up)";
 
         public override void DoSettingsWindowContents(Rect inRect) => SettingsWindow.DoWindowContents(inRect);
+
+        public override void WriteSettings() {
+            Settings?.Sanitize(); // whatever was typed into the numeric boxes, only sane limits reach the config file
+            base.WriteSettings();
+        }
     }
 }

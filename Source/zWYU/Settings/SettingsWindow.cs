@@ -29,9 +29,21 @@ namespace zWYU
 
         static ZwyuSettings Settings => ZwyuMod.Settings;
 
+        /// <summary>Entry point from ZwyuMod.DoSettingsWindowContents. A UI bug must never turn into an exception per frame.</summary>
         public static void DoWindowContents(Rect windowRect) {
+            try {
+                DoWindowContentsInner(windowRect);
+            } catch (Exception e) {
+                Diag.ErrorOnce(Diag.Settings, "the settings window threw while drawing; showing a fallback. Settings are still loaded and saved normally.", e);
+                Widgets.Label(windowRect, "zWYU: the settings window failed to draw (see the log). Your settings are unaffected.");
+            }
+        }
+
+        static void DoWindowContentsInner(Rect windowRect) {
             var settings = Settings;
 
+            // Layout note: the original kept its top Listing_Standard open and drew everything in that group's local coordinates.
+            // Here every group is closed before the next thing is drawn, so all rects are absolute (in `windowRect`'s parent space).
             var top = new Listing_Standard { ColumnWidth = (float)Math.Round((windowRect.width - 17 * 2) / 3) };
             top.Begin(windowRect);
             top.DrawBool(ref settings.Enabled, nameof(settings.Enabled));
@@ -45,17 +57,19 @@ namespace zWYU
             var headerHeight = Mathf.Max(top.MaxColumnHeightSeen, top.CurHeight);
             top.End();
 
+            var y = windowRect.y + headerHeight + 4f;
+
             var notices = BuildNotices();
-            var noticeHeight = 0f;
             if (notices.Length > 0) {
-                var noticeRect = new Rect(windowRect.x, windowRect.y + headerHeight + 4f, windowRect.width, 0f);
-                noticeHeight = Text.CalcHeight(notices, windowRect.width);
-                noticeRect.height = noticeHeight;
-                using (new DrawContext { TextFont = GameFont.Tiny })
-                    Widgets.Label(noticeRect, notices);
-                noticeHeight += 4f;
+                using (new DrawContext { TextFont = GameFont.Tiny }) {
+                    var noticeHeight = Text.CalcHeight(notices, windowRect.width);
+                    Widgets.Label(new Rect(windowRect.x, y, windowRect.width, noticeHeight), notices);
+                    y += noticeHeight + 4f;
+                }
             }
 
+            const float tabRowHeight = TabDrawer.TabHeight;  // the tab labels are drawn above tabRect
+            const float restoreRowHeight = 30f + 6f;          // restore button and its gap
             tabsList.Clear();
             tabsList.Add(new TabRecord("Opportunity_Tab".ModTranslate(), () => tab = Tab.Opportunity, tab == Tab.Opportunity));
             if (settings.Opportunity_TweakVanilla)
@@ -64,31 +78,25 @@ namespace zWYU
                 tab = Tab.Opportunity;
             tabsList.Add(new TabRecord("HaulBeforeCarry_Tab".ModTranslate(), () => tab = Tab.BeforeCarry, tab == Tab.BeforeCarry));
 
-            var tabRect = windowRect.AtZero(); // top left of windowRect, because we're drawing inside it
-            tabRect.yMin   += headerHeight + noticeHeight + 12f + 30f; // gap & room for tab label row
-            tabRect.height -= 12f + 30f;                                // room for bottom gap & restore button
+            var tabTop  = y + tabRowHeight;
+            var tabRect = new Rect(windowRect.x, tabTop, windowRect.width, Mathf.Max(100f, windowRect.yMax - tabTop - restoreRowHeight));
             Widgets.DrawMenuSection(tabRect);
             TabDrawer.DrawTabs(tabRect, tabsList, 1, null);
             tabsList.Clear();
 
             var inner = tabRect.ContractedBy(17f);
-            inner.y  += 0f;
             switch (tab) {
                 case Tab.Opportunity:         DrawOpportunityTab(inner, settings);         break;
                 case Tab.OpportunityAdvanced: DrawOpportunityAdvancedTab(inner, settings); break;
                 case Tab.BeforeCarry:         DrawBeforeCarryTab(inner, settings);         break;
             }
 
-            var bottom = windowRect.AtZero();
-            bottom.yMin += tabRect.yMax + 6f;
-            var restore = new Listing_Standard { ColumnWidth = (float)Math.Round((windowRect.width - 17 * 2) / 3) };
-            restore.Begin(bottom);
-            if (Widgets.ButtonText(restore.GetRect(30f), "RestoreToDefaultSettings".Translate())) {
+            var restoreRect = new Rect(windowRect.x, tabRect.yMax + 6f, (float)Math.Round((windowRect.width - 17 * 2) / 3), 30f);
+            if (Widgets.ButtonText(restoreRect, "RestoreToDefaultSettings".Translate())) {
                 settings.RestoreDefaults();
                 opportunityPanel.Search.filter.Text = string.Empty;
                 beforeCarryPanel.Search.filter.Text = string.Empty;
             }
-            restore.End();
         }
 
         static void DrawOpportunityTab(Rect inner, ZwyuSettings settings) {
