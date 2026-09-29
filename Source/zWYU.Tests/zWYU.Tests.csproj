@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Unit tests that run anywhere (no RimWorld needed, e.g. in CI):
+      * TripRules / SettingsDefaults are compiled straight from the mod's source (they reference no RimWorld types);
+      * repository invariants: licensing/attribution, About metadata, translation keys, no binaries, no IL transpilers.
+    Tests that need the real game assemblies live in Source/zWYU.PatchAudit.
+        dotnet test Source/zWYU.Tests
+  -->
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>10.0</LangVersion>
+    <Nullable>disable</Nullable>
+    <IsPackable>false</IsPackable>
+    <RootNamespace>zWYU.Tests</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\zWYU\Detour\TripRules.cs" Link="Linked\TripRules.cs" />
+    <Compile Include="..\zWYU\Settings\SettingsDefaults.cs" Link="Linked\SettingsDefaults.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+  </ItemGroup>
+
+</Project>
