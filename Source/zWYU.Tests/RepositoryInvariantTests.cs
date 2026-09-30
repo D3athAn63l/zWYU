@@ -165,6 +165,48 @@ namespace zWYU.Tests
             Assert.True(calls.Count == 0, "PatchAll() is called in: " + string.Join(", ", calls));
         }
 
+        // ---- semantic fidelity guards (review pass) ---------------------------------------------------------------------------
+
+        static string CodeWithoutComments(string file) =>
+            string.Join("\n", File.ReadLines(file).Where(l => !l.TrimStart().StartsWith("//") && !l.TrimStart().StartsWith("///") && !l.TrimStart().StartsWith("*")));
+
+        [Fact]
+        public void ThereIsNoPathfindingCandidateBudget() {
+            // The baseline must not silently stop a search after N candidates (review finding 3). Only the range-expansion termination guard remains.
+            foreach (var file in SourceFiles()) {
+                var code = CodeWithoutComments(file);
+                Assert.DoesNotContain("MaxPathfindingCandidates", code);
+                Assert.DoesNotContain("PathBudgetExhausted", code);
+            }
+            Assert.DoesNotContain("safety limit", Read("Languages/English/Keyed/zWYU.xml"));
+        }
+
+        [Fact]
+        public void TheSupplyDecision_NeverUsesTotalMaterialCostOrTheTrimmedJobQueue() {
+            // review finding 1: TotalMaterialCost() is the whole cost, targetQueueA is what vanilla kept after trimming.
+            foreach (var file in new[] { "Source/zWYU/Detour/BeforeCarry.cs", "Source/zWYU/Detour/SupplyRules.cs", "Source/zWYU/Detour/SupplyNearbyResources.cs", "Source/zWYU/Patches/SupplyHook.cs" }) {
+                var code = CodeWithoutComments(Path.Combine(Root, file));
+                Assert.DoesNotContain("TotalMaterialCost", code);
+                Assert.DoesNotContain("targetQueueA", code);
+            }
+            var supply = CodeWithoutComments(Path.Combine(Root, "Source/zWYU/Detour/BeforeCarry.cs"));
+            Assert.Contains("ThingCountNeeded", supply);
+            Assert.Contains("GetSpaceRemainingWithEnroute", supply);
+            Assert.Contains("SupplyNearbyResources.LargestNearbyStack", supply);
+            Assert.Contains("SupplyRules.ExtrasExist", supply);
+        }
+
+        [Fact]
+        public void OpportunityContext_IsOnlyReleasedThroughTheOwnershipToken() {
+            // review finding 2: nothing but the owner's finalizer may deliver or clear the context.
+            var hook = CodeWithoutComments(Path.Combine(Root, "Source/zWYU/Patches/OpportunityHook.cs"));
+            Assert.Contains("__state", hook);
+            Assert.Contains("OpportunityContext.Release(__state", hook);
+            Assert.Contains("OpportunityContext.Acquire(", hook);
+            var resets = SourceFiles().Where(f => CodeWithoutComments(f).Contains("OpportunityContext.Reset()")).Select(f => Path.GetFileName(f)).ToList();
+            Assert.Equal(new[] { "OpportunityHook.cs" }, resets); // only the hook file itself (the owner's release and the startup self-test)
+        }
+
         // ---- translations --------------------------------------------------------------------------------------------------
 
         static HashSet<string> KeyedKeys() {

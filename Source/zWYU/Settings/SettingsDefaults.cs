@@ -50,12 +50,13 @@ namespace zWYU
         // Range-heuristic expansion factor per pass (a [TweakValue] in the original; 1.1 - 3.0 allowed).
         public const float HeuristicRangeExpandFactor = 2f;
 
-        // ---- zWYU additions (safety valves; see docs/PORTING_NOTES.md "Known deviations") ----
+        // ---- zWYU addition (a termination guard; see docs/PORTING_NOTES.md "Known deviations") ----
 
-        /// <summary>Upper bound on range-expansion passes in one opportunity search (the original relied on float overflow to terminate).</summary>
+        /// <summary>
+        /// Termination guard for the range-expansion passes of one opportunity search (the original ended by float overflow). It is NOT a
+        /// candidate budget: a unit test proves that it cannot cut off a legitimate candidate on any supported map size at the default and at the
+        /// minimum/maximum tweak factors. There is deliberately no limit on how many candidates are examined or pathfound.
+        /// </summary>
         public const int MaxRangeExpansions = 40;
-
-        /// <summary>Upper bound on candidates given a real pathfinding check in one search ("Pathfind during search" mode only).</summary>
-        public const int MaxPathfindingCandidates = 12;
     }
 }

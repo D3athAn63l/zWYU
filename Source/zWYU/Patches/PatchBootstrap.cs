@@ -26,8 +26,12 @@ namespace zWYU
             }
 
             // Feature.SupplyHook: construction supplies
-            if (Features.TryPatch(harmony, typeof(ResourceDeliverJobFor_Patch), Feature.SupplyHook))
+            var supplyProblem = SupplyAnchor.Verify();
+            if (supplyProblem != null) {
+                Features.Disable(Feature.SupplyHook, "WorkGiver_ConstructDeliverResources.ResourceDeliverJobFor", supplyProblem);
+            } else if (Features.TryPatch(harmony, typeof(ResourceDeliverJobFor_Patch), Feature.SupplyHook)) {
                 Features.TryPatch(harmony, typeof(SupplyHasJobOnThing_Patch), Feature.SupplyHook);
+            }
 
             // Feature.LifecycleTracking: bookkeeping + job reports; each is independent and cosmetic/diagnostic.
             Features.TryPatch(harmony, typeof(JobDriver_HaulToCell__Notify_Starting_Patch), Feature.LifecycleTracking);

@@ -10,6 +10,7 @@
 //   * A path of zero length is reported as not found, so "the start already satisfies the end condition" (pawn already touching
 //     the target) is decided first with ReachabilityImmediate and costs 0 - it is the best possible leg, not a failure.
 
+using System.Diagnostics;
 using RimWorld;
 using Verse;
 using Verse.AI;
@@ -18,6 +19,11 @@ namespace zWYU
 {
     internal static class PathCosts
     {
+        // Diagnostics only: how many synchronous FindPathNow queries zWYU has issued, and (only while logging is on) the time they took.
+        // Pathfinding cost stays visible in the per-search summary; it is a documented performance concern, not a semantic limit.
+        public static int  Queries;
+        public static long Ticks;
+
         /// <summary>
         /// Cost of walking from <paramref name="start"/> to <paramref name="destCell"/> for <paramref name="pawn"/>.
         /// Returns false if there is no path. The destination is always passed as a CELL (the original's fix for an
@@ -33,11 +39,18 @@ namespace zWYU
             if (ReachabilityImmediate.CanReachImmediate(start, target, map, peMode, pawn))
                 return true; // already there: zero-cost leg
 
-            using (var path = map.pathFinder.FindPathNow(start, target, TraverseParms.For(pawn), null, peMode)) {
-                if (path == null || !path.Found)
-                    return false;
-                cost = path.TotalCost;
-                return true;
+            Queries++;
+            var started = Diag.Summary ? Stopwatch.GetTimestamp() : 0L;
+            try {
+                using (var path = map.pathFinder.FindPathNow(start, target, TraverseParms.For(pawn), null, peMode)) {
+                    if (path == null || !path.Found)
+                        return false;
+                    cost = path.TotalCost;
+                    return true;
+                }
+            } finally {
+                if (started != 0L)
+                    Ticks += Stopwatch.GetTimestamp() - started;
             }
         }
     }

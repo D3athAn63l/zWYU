@@ -34,7 +34,7 @@
   <zWYU_Opportunity_Intro>&lt;color=#999999&gt;"&lt;/color&gt;&lt;color=#87f6f6&gt;... on the way to ...&lt;/color&gt;&lt;color=#999999&gt;"\n\nHauling on the way to a job is a vanilla feature, hence generally compatible with all mods. Some storage mods use delays, so are disallowed by default.\n\nWe skip opportunities when bleeding or forming a caravan.&lt;/color&gt;</zWYU_Opportunity_Intro>
 
   <zWYU_Label_Opportunity_PathChecker>Path checking</zWYU_Label_Opportunity_PathChecker>
-  <zWYU_Tooltip_Opportunity_PathChecker>Our default is performant, but impassable walls and locked doors are ignored until a final check - which means no opportunity if it fails. These circumstances are less common with an open base.\n\n"Pathfind during search" is slow, but finds an opportunity if it exists (up to a safety limit on how many candidates are pathfound per search). Recommended for small colonies, fast machines, or those desperate for hauls in a mountain base.</zWYU_Tooltip_Opportunity_PathChecker>
+  <zWYU_Tooltip_Opportunity_PathChecker>Our default is performant, but impassable walls and locked doors are ignored until a final check - which means no opportunity if it fails. These circumstances are less common with an open base.\n\n"Pathfind during search" is slow (it pathfinds every candidate that survives the cheap checks, synchronously), but finds an opportunity if it exists. Recommended for small colonies, fast machines, or those desperate for hauls in a mountain base.</zWYU_Tooltip_Opportunity_PathChecker>
   <zWYU_Label_Opportunity_PathChecker_Vanilla>Within ranges &amp; region count (vanilla)\nFPS: ★★★★  Opportunities: ★☆☆☆</zWYU_Label_Opportunity_PathChecker_Vanilla>
   <zWYU_Label_Opportunity_PathChecker_Default>Pathfind once after search (default)\nFPS: ★★★☆  Opportunities: ★★★☆</zWYU_Label_Opportunity_PathChecker_Default>
   <zWYU_Label_Opportunity_PathChecker_Pathfinding>Pathfind during search\nFPS: ★☆☆☆  Opportunities: ★★★★</zWYU_Label_Opportunity_PathChecker_Pathfinding>
@@ -80,7 +80,7 @@
   <zWYU_HaulBeforeCarry_EqualPriority>&lt;color=#999999&gt;If a resource is already in storage, our pawn won't save a trip for a dedicated hauler, but can still grab extras that expedite their future work.&lt;/color&gt;</zWYU_HaulBeforeCarry_EqualPriority>
 
   <zWYU_Label_HaulBeforeCarry_Supplies>Haul extra construction supplies closer</zWYU_Label_HaulBeforeCarry_Supplies>
-  <zWYU_Tooltip_HaulBeforeCarry_Supplies>If hauling supplies to storage would bring them closer to their blueprint, do that first (grabbing extra). Only when the largest nearby stack exceeds what the construction needs.</zWYU_Tooltip_HaulBeforeCarry_Supplies>
+  <zWYU_Tooltip_HaulBeforeCarry_Supplies>If hauling supplies to storage would bring them closer to their blueprint, do that first (grabbing extra). Only when the largest nearby stack is larger than what the construction still needs.</zWYU_Tooltip_HaulBeforeCarry_Supplies>
   <zWYU_Label_HaulBeforeCarry_Bills>Haul extra bill ingredients closer</zWYU_Label_HaulBeforeCarry_Bills>
   <zWYU_Tooltip_HaulBeforeCarry_Bills>If hauling ingredients to storage would bring them closer to their workbench, do that first (grabbing extra). Only when the ingredient stack exceeds what the bill takes. Yields to Common Sense's option of the same purpose when that is on.</zWYU_Tooltip_HaulBeforeCarry_Bills>
   <zWYU_Label_HaulBeforeCarry_ToEqualPriority>Haul extra resources closer from same-priority storage</zWYU_Label_HaulBeforeCarry_ToEqualPriority>

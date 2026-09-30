@@ -8,7 +8,6 @@
 // the pawn first hauls the material to that storage ("headed closer to X"), grabbing extras with vanilla's own duplicate pickup.
 // When the haul ends, vanilla asks the same work giver again and the delivery is now shorter.
 
-using System.Linq;
 using RimWorld;
 using Verse;
 using Verse.AI;
@@ -82,10 +81,16 @@ namespace zWYU
 
         /// <summary>
         /// Original: `BeforeSupplyDetour_Job`, now driven from the RESULT of vanilla's ResourceDeliverJobFor instead of from inside it.
-        /// <paramref name="deliverJob"/> is vanilla's HaulToContainer job: targetA = closest reachable resource, targetQueueA = nearby stacks
-        /// of the same def that will be picked up with it, targetC = the blueprint/frame.
+        /// <paramref name="deliverJob"/> is vanilla's HaulToContainer job; only its `targetA` (the resource vanilla selected) is used from it.
+        ///
+        /// The two inputs of the original decision are NOT read from the job (it does not carry them faithfully):
+        ///   * the CURRENT need for that material comes from vanilla's own calculation for this call - `IHaulEnroute.GetSpaceRemainingWithEnroute`
+        ///     when the constructible is an IHaulEnroute, otherwise `IConstructible.ThingCountNeeded`; NOT `TotalMaterialCost()`, which is the whole
+        ///     cost including what has already been delivered;
+        ///   * the candidate stacks come from vanilla's collector re-run for that resource (SupplyNearbyResources), because vanilla trims the list
+        ///     before building the job, so `targetQueueA` is only a subset of what the original inspected.
         /// </summary>
-        public static Job TryCreateForSupply(Pawn pawn, IConstructible constructible, Job deliverJob) {
+        public static Job TryCreateForSupply(Pawn pawn, WorkGiver_ConstructDeliverResources giver, IConstructible constructible, Job deliverJob) {
             var settings = ZwyuMod.Settings;
             if (!settings.Enabled || !settings.HaulBeforeCarry_Supplies) return null;
             if (deliverJob == null || deliverJob.def != JobDefOf.HaulToContainer) return null;
@@ -102,26 +107,28 @@ namespace zWYU
             }
             if (!Eligibility.PawnMayDetour(pawn)) return null;
 
-            // Haul the largest nearby supply stack instead of the absolute closest (original v3.1.0).
-            var mostThing = foundRes;
-            var queue     = deliverJob.targetQueueA;
-            if (queue != null) {
-                for (var i = 0; i < queue.Count; i++) {
-                    var candidate = queue[i].Thing;
-                    if (candidate != null && candidate.def == foundRes.def && candidate.stackCount > mostThing.stackCount)
-                        mostThing = candidate;
-                }
-            }
+            // How much of this material is still needed right now: the same number vanilla's loop computed (`num`) before choosing the resource.
+            var def         = foundRes.def;
+            var currentNeed = constructible is IHaulEnroute enroute ? enroute.GetSpaceRemainingWithEnroute(def, pawn) : constructible.ThingCountNeeded(def);
+            if (currentNeed <= 0) return null; // vanilla never returns a delivery job for a material that is not needed
 
-            // Only haul a construction supply to storage if there are extras (original v3.1.0): the largest nearby stack must exceed
-            // what the whole construction needs of this material.
-            var need = constructible.TotalMaterialCost().FirstOrDefault(x => x.thingDef == foundRes.def);
-            if (need == null || mostThing.stackCount <= need.count) return null;
+            // Haul the largest nearby supply stack instead of the absolute closest (original v3.1.0), among the FULL candidate list.
+            var mostThing = SupplyNearbyResources.LargestNearbyStack(giver, pawn, foundRes, out var candidateCount);
+            if (mostThing == null) return null;
+
+            // Only haul a construction supply to storage if there are extras (original v3.1.0): strictly more than is currently needed.
+            if (!SupplyRules.ExtrasExist(mostThing.stackCount, currentNeed)) {
+                if (Diag.Verbose)
+                    Diag.Trace(Diag.BeforeCarry, $"  no extras for {Diag.Describe(constructibleThing)}: largest of {candidateCount} nearby stacks is {mostThing.stackCount}, current need {currentNeed}");
+                return null;
+            }
 
             // The original trusted the neighbour stacks vanilla had collected; a stack the pawn cannot actually reserve/reach would only fail the
             // haul job's pre-toil reservations, so check it exactly as the bill path does.
             if (!HaulAIUtility.PawnCanAutomaticallyHaulFast(pawn, mostThing, false)) return null;
 
+            if (Diag.Verbose)
+                Diag.Trace(Diag.BeforeCarry, $"  supply candidate {Diag.Describe(mostThing)} (largest of {candidateCount} nearby stacks) vs current need {currentNeed} of {def.defName}");
             return TryCreate(pawn, constructibleThing.Position, mostThing, DetourKind.BeforeCarrySupply);
         }
     }

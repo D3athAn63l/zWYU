@@ -39,9 +39,11 @@ namespace zWYU.Tests
         }
 
         [Fact]
-        public void SafetyValves_AreSane() {
+        public void TheOnlySearchBound_IsTheRangeExpansionTerminationGuard() {
             Assert.InRange(SettingsDefaults.MaxRangeExpansions, 10, 200);
-            Assert.InRange(SettingsDefaults.MaxPathfindingCandidates, 1, 100);
+            // There is deliberately no candidate budget of any kind (see SearchLoopTests and RepositoryInvariantTests).
+            var constants = typeof(SettingsDefaults).GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+            Assert.DoesNotContain(constants, f => f.Name.Contains("Candidates") || f.Name.Contains("Budget"));
         }
     }
 }
