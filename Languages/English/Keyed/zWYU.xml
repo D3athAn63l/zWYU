@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  zWYU English strings. Adapted from the translation keys of While You're Up (while_youre_up.yaml, WYU 4.0.4),
+  Copyright (C) 2020 Christopher S. Galpin, AGPL-3.0-or-later. See NOTICE.
+  Colors used in rich text: #dcffaf start, #87f6f6 haulable, #d46f68 job, #d09b61 storage, #999999 notes.
+  (Rich-text tags are written escaped, e.g. &amp;lt;color=#999999&amp;gt;, because they live inside XML text.)
+-->
+<LanguageData>
+
+  <!-- ===== job reports ===== -->
+  <zWYU_Opportunity_LoadReport>{ORIGINAL} on the way to {DESTINATION}.</zWYU_Opportunity_LoadReport>
+  <zWYU_HaulBeforeCarry_LoadReport>{ORIGINAL}, headed closer to {DESTINATION}.</zWYU_HaulBeforeCarry_LoadReport>
+
+  <!-- ===== status area of the settings window ===== -->
+  <zWYU_FeatureDisabled>zWYU feature "{FEATURE}" is disabled: {REASON} Vanilla behavior is unaffected; see the log for details.</zWYU_FeatureDisabled>
+  <zWYU_PickUpAndHaul_Note>Pick Up And Haul detected. This baseline coexists with it (no detours while a pawn still carries PUAH-hauled inventory) but does not include the original's "Pick Up And Haul+" enhancements.</zWYU_PickUpAndHaul_Note>
+  <zWYU_Diagnostics_Counters>Hook counters (this session): opportunity checks seen {ENTERED}, search engaged {ENGAGED}, haul found {FOUND}. If "seen" keeps rising during normal play while "engaged" stays 0, the haulable-search hook is not being reached.</zWYU_Diagnostics_Counters>
+
+  <!-- ===== general settings ===== -->
+  <zWYU_Label_Enabled>Enabled</zWYU_Label_Enabled>
+  <zWYU_Tooltip_Enabled>Toggle the entire mod without restarting.\nUseful for troubleshooting.</zWYU_Tooltip_Enabled>
+
+  <zWYU_Label_DrawSpecialHauls>Draw colored path detours</zWYU_Label_DrawSpecialHauls>
+  <zWYU_Tooltip_DrawSpecialHauls>Original job paths are red, new opportunistic paths are green.\n\nOriginal ingredient/supply paths are magenta, new optimal paths are cyan.\n\n(This is synced to vanilla's Development mode -&gt; inspector icon -&gt; Visibility -&gt; Draw Opportunistic Jobs.)</zWYU_Tooltip_DrawSpecialHauls>
+
+  <zWYU_Label_DebugLevel>Debug logging</zWYU_Label_DebugLevel>
+  <zWYU_Tooltip_DebugLevel>How much zWYU writes to the log. Errors and compatibility failures are always logged.\n\nSummary: one line per decision (haul selected / none found / started / ended, with reject-reason totals).\nVerbose: also one line per rejected candidate. Chatty; for short reproductions only.</zWYU_Tooltip_DebugLevel>
+  <zWYU_Label_DebugLevel_Off>Off</zWYU_Label_DebugLevel_Off>
+  <zWYU_Label_DebugLevel_Summary>Summary</zWYU_Label_DebugLevel_Summary>
+  <zWYU_Label_DebugLevel_Verbose>Verbose</zWYU_Label_DebugLevel_Verbose>
+
+  <!-- ===== Opportunity tab ===== -->
+  <zWYU_Opportunity_Tab>Hauls of Opportunity</zWYU_Opportunity_Tab>
+  <zWYU_Opportunity_Intro>&lt;color=#999999&gt;"&lt;/color&gt;&lt;color=#87f6f6&gt;... on the way to ...&lt;/color&gt;&lt;color=#999999&gt;"\n\nHauling on the way to a job is a vanilla feature, hence generally compatible with all mods. Some storage mods use delays, so are disallowed by default.\n\nWe skip opportunities when bleeding or forming a caravan.&lt;/color&gt;</zWYU_Opportunity_Intro>
+
+  <zWYU_Label_Opportunity_PathChecker>Path checking</zWYU_Label_Opportunity_PathChecker>
+  <zWYU_Tooltip_Opportunity_PathChecker>Our default is performant, but impassable walls and locked doors are ignored until a final check - which means no opportunity if it fails. These circumstances are less common with an open base.\n\n"Pathfind during search" is slow (it pathfinds every candidate that survives the cheap checks, synchronously), but finds an opportunity if it exists. Recommended for small colonies, fast machines, or those desperate for hauls in a mountain base.</zWYU_Tooltip_Opportunity_PathChecker>
+  <zWYU_Label_Opportunity_PathChecker_Vanilla>Within ranges &amp; region count (vanilla)\nFPS: ★★★★  Opportunities: ★☆☆☆</zWYU_Label_Opportunity_PathChecker_Vanilla>
+  <zWYU_Label_Opportunity_PathChecker_Default>Pathfind once after search (default)\nFPS: ★★★☆  Opportunities: ★★★☆</zWYU_Label_Opportunity_PathChecker_Default>
+  <zWYU_Label_Opportunity_PathChecker_Pathfinding>Pathfind during search\nFPS: ★☆☆☆  Opportunities: ★★★★</zWYU_Label_Opportunity_PathChecker_Pathfinding>
+
+  <zWYU_Label_Opportunity_TweakVanilla>Show advanced opportunity settings tab...</zWYU_Label_Opportunity_TweakVanilla>
+
+  <zWYU_Label_Opportunity_AutoBuildings>Edit manually (won't update with mod)</zWYU_Label_Opportunity_AutoBuildings>
+  <zWYU_Label_Opportunity_ToStockpiles>Stockpiles</zWYU_Label_Opportunity_ToStockpiles>
+
+  <!-- ===== Advanced tab ===== -->
+  <zWYU_OpportunityAdvanced_Tab>Advanced Settings</zWYU_OpportunityAdvanced_Tab>
+  <zWYU_OpportunityAdvanced_Text1>Vanilla, Default, Pathfinding&lt;color=#999999&gt;: Maximum distance ratios (see tooltips).&lt;/color&gt;\n</zWYU_OpportunityAdvanced_Text1>
+  <zWYU_OpportunityAdvanced_Text2>Vanilla&lt;color=#999999&gt;: Maximum distances/ratios to limit opportunities in exchange for performance.&lt;/color&gt;\nDefault, Pathfinding&lt;color=#999999&gt;: Soft limits used as a performance heuristic.&lt;/color&gt;\n</zWYU_OpportunityAdvanced_Text2>
+  <zWYU_OpportunityAdvanced_Text3>Vanilla only&lt;color=#999999&gt;: Maximum region-look count (faster than pathfinding but variable distance - see tooltip).&lt;/color&gt;\n</zWYU_OpportunityAdvanced_Text3>
+
+  <zWYU_Label_Opportunity_MaxStartToThing>&lt;color=#dcffaf&gt;start&lt;/color&gt;➡&lt;color=#87f6f6&gt;haulable&lt;/color&gt;</zWYU_Label_Opportunity_MaxStartToThing>
+  <zWYU_Tooltip_Opportunity_MaxStartToThing>If (&lt;color=#dcffaf&gt;start&lt;/color&gt;➡&lt;color=#87f6f6&gt;haulable&lt;/color&gt;) exceeds this value, the haul is disqualified.\n\n"Start" is the pawn's location when the job is assigned.</zWYU_Tooltip_Opportunity_MaxStartToThing>
+
+  <zWYU_Label_Opportunity_MaxStoreToJob>&lt;color=#d09b61&gt;storage&lt;/color&gt;➡&lt;color=#d46f68&gt;job&lt;/color&gt;</zWYU_Label_Opportunity_MaxStoreToJob>
+  <zWYU_Tooltip_Opportunity_MaxStoreToJob>If (&lt;color=#d09b61&gt;storage&lt;/color&gt;➡&lt;color=#d46f68&gt;job&lt;/color&gt;) exceeds this value, the haul is disqualified.\n\nIf a haulable's storage is farther from the pawn's ending position than this, the haul is disqualified.</zWYU_Tooltip_Opportunity_MaxStoreToJob>
+
+  <zWYU_Label_Opportunity_MaxStartToThingPctOrigTrip>&lt;color=#dcffaf&gt;start&lt;/color&gt;➡&lt;color=#87f6f6&gt;haulable&lt;/color&gt; : &lt;color=#dcffaf&gt;start&lt;/color&gt;➡&lt;color=#d46f68&gt;job&lt;/color&gt;</zWYU_Label_Opportunity_MaxStartToThingPctOrigTrip>
+  <zWYU_Tooltip_Opportunity_MaxStartToThingPctOrigTrip>If (&lt;color=#dcffaf&gt;start&lt;/color&gt;➡&lt;color=#87f6f6&gt;haulable&lt;/color&gt; / &lt;color=#dcffaf&gt;start&lt;/color&gt;➡&lt;color=#d46f68&gt;job&lt;/color&gt;) exceeds this percentage, the haul is disqualified.</zWYU_Tooltip_Opportunity_MaxStartToThingPctOrigTrip>
+
+  <zWYU_Label_Opportunity_MaxStoreToJobPctOrigTrip>&lt;color=#d09b61&gt;storage&lt;/color&gt;➡&lt;color=#d46f68&gt;job&lt;/color&gt; : &lt;color=#dcffaf&gt;start&lt;/color&gt;➡&lt;color=#d46f68&gt;job&lt;/color&gt;</zWYU_Label_Opportunity_MaxStoreToJobPctOrigTrip>
+  <zWYU_Tooltip_Opportunity_MaxStoreToJobPctOrigTrip>If (&lt;color=#d09b61&gt;storage&lt;/color&gt;➡&lt;color=#d46f68&gt;job&lt;/color&gt; / &lt;color=#dcffaf&gt;start&lt;/color&gt;➡&lt;color=#d46f68&gt;job&lt;/color&gt;) exceeds this percentage, the haul is disqualified.</zWYU_Tooltip_Opportunity_MaxStoreToJobPctOrigTrip>
+
+  <zWYU_Label_Opportunity_MaxNewLegsPctOrigTrip>&lt;color=#dcffaf&gt;start&lt;/color&gt;➡&lt;color=#87f6f6&gt;haulable&lt;/color&gt; + &lt;color=#d09b61&gt;storage&lt;/color&gt;➡&lt;color=#d46f68&gt;job&lt;/color&gt; : &lt;color=#dcffaf&gt;start&lt;/color&gt;➡&lt;color=#d46f68&gt;job&lt;/color&gt;</zWYU_Label_Opportunity_MaxNewLegsPctOrigTrip>
+  <zWYU_Tooltip_Opportunity_MaxNewLegsPctOrigTrip>This is a ratio of the "additional legs" of the new trip to the original trip.</zWYU_Tooltip_Opportunity_MaxNewLegsPctOrigTrip>
+
+  <zWYU_Label_Opportunity_MaxTotalTripPctOrigTrip>&lt;color=#dcffaf&gt;start&lt;/color&gt;➡&lt;color=#87f6f6&gt;haulable&lt;/color&gt;➡&lt;color=#d09b61&gt;storage&lt;/color&gt;➡&lt;color=#d46f68&gt;job&lt;/color&gt; : &lt;color=#dcffaf&gt;start&lt;/color&gt;➡&lt;color=#d46f68&gt;job&lt;/color&gt;</zWYU_Label_Opportunity_MaxTotalTripPctOrigTrip>
+  <zWYU_Tooltip_Opportunity_MaxTotalTripPctOrigTrip>This is a ratio of the new trip to the original trip.</zWYU_Tooltip_Opportunity_MaxTotalTripPctOrigTrip>
+
+  <zWYU_Label_Opportunity_MaxStartToThingRegionLookCount>&lt;color=#dcffaf&gt;start&lt;/color&gt;➡&lt;color=#87f6f6&gt;haulable&lt;/color&gt;</zWYU_Label_Opportunity_MaxStartToThingRegionLookCount>
+  <zWYU_Tooltip_Opportunity_MaxStartToThingRegionLookCount>To understand this, enable Development mode -&gt; inspector icon -&gt; Visibility -&gt; Draw Regions.\n\nExploration begins from the start region spreading out to all neighbors until encountering the destination region. This setting caps the total number explored - even those in the wrong direction.\n\nIt can't be calculated perfectly from distance, as regions will vary in size and neighbors. (A corridor has only forward and back, so they're explored further.)\nBut in a completely open field, if a pawn must travel the distance of n=3 full-sized 12x12 regions (~36 tiles), the algorithm will explore 2(n^2+n)+1 or 25 regions.</zWYU_Tooltip_Opportunity_MaxStartToThingRegionLookCount>
+
+  <zWYU_Label_Opportunity_MaxStoreToJobRegionLookCount>&lt;color=#d09b61&gt;storage&lt;/color&gt;➡&lt;color=#d46f68&gt;job&lt;/color&gt;</zWYU_Label_Opportunity_MaxStoreToJobRegionLookCount>
+  <zWYU_Tooltip_Opportunity_MaxStoreToJobRegionLookCount>Same as the start-to-haulable region look count, for the storage-to-job leg. See that tooltip.</zWYU_Tooltip_Opportunity_MaxStoreToJobRegionLookCount>
+
+  <!-- ===== Supplies & ingredients tab ===== -->
+  <zWYU_HaulBeforeCarry_Tab>Supplies &amp; Ingredients</zWYU_HaulBeforeCarry_Tab>
+  <zWYU_HaulBeforeCarry_Intro>&lt;color=#999999&gt;"&lt;/color&gt;&lt;color=#87f6f6&gt;... closer to ...&lt;/color&gt;&lt;color=#999999&gt;"\n\nA pawn will find the closest resource, which is sometimes awaiting delivery to storage near our job site. By doing that first, our pawn can grab extras.&lt;/color&gt;</zWYU_HaulBeforeCarry_Intro>
+  <zWYU_HaulBeforeCarry_EqualPriority>&lt;color=#999999&gt;If a resource is already in storage, our pawn won't save a trip for a dedicated hauler, but can still grab extras that expedite their future work.&lt;/color&gt;</zWYU_HaulBeforeCarry_EqualPriority>
+
+  <zWYU_Label_HaulBeforeCarry_Supplies>Haul extra construction supplies closer</zWYU_Label_HaulBeforeCarry_Supplies>
+  <zWYU_Tooltip_HaulBeforeCarry_Supplies>If hauling supplies to storage would bring them closer to their blueprint, do that first (grabbing extra). Only when the largest nearby stack is larger than what the construction still needs.</zWYU_Tooltip_HaulBeforeCarry_Supplies>
+  <zWYU_Label_HaulBeforeCarry_Bills>Haul extra bill ingredients closer</zWYU_Label_HaulBeforeCarry_Bills>
+  <zWYU_Tooltip_HaulBeforeCarry_Bills>If hauling ingredients to storage would bring them closer to their workbench, do that first (grabbing extra). Only when the ingredient stack exceeds what the bill takes. Yields to Common Sense's option of the same purpose when that is on.</zWYU_Tooltip_HaulBeforeCarry_Bills>
+  <zWYU_Label_HaulBeforeCarry_ToEqualPriority>Haul extra resources closer from same-priority storage</zWYU_Label_HaulBeforeCarry_ToEqualPriority>
+  <zWYU_Tooltip_HaulBeforeCarry_ToEqualPriority>Also consider storage of the same priority as where the resource already is (a different storage than its current one).</zWYU_Tooltip_HaulBeforeCarry_ToEqualPriority>
+  <zWYU_Label_HaulBeforeCarry_AutoBuildings>Edit manually (won't update with mod)</zWYU_Label_HaulBeforeCarry_AutoBuildings>
+  <zWYU_Label_HaulBeforeCarry_ToStockpiles>Stockpiles</zWYU_Label_HaulBeforeCarry_ToStockpiles>
+
+</LanguageData>

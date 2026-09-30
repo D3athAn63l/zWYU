@@ -1,0 +1,38 @@
+name: Build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      # Compiles against the Krafs.Rimworld.Ref NuGet reference assemblies: no game files are needed (or stored) anywhere.
+      - name: Build mod
+        run: dotnet build Source/zWYU/zWYU.csproj -c Release
+
+      # Rules, defaults, licensing/attribution, About metadata, translation keys, "no transpilers", "no binaries".
+      # (The PatchAudit tool needs the real game assemblies and is run locally: see README.)
+      - name: Unit + repository-invariant tests
+        run: dotnet test Source/zWYU.Tests -c Release
+
+      - name: Package mod folder
+        run: |
+          mkdir -p dist/zWYU
+          cp -r About Languages 1.6 dist/zWYU/
+          cp LICENSE NOTICE README.md dist/zWYU/
+          rm -f dist/zWYU/1.6/Assemblies/.gitkeep dist/zWYU/1.6/Assemblies/*.pdb
+          ls -R dist
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: zWYU-mod
+          path: dist

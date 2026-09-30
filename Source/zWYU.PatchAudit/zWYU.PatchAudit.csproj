@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Developer tool (not shipped). Loads the built zWYU.dll next to the REAL RimWorld 1.6 assemblies and proves, without starting the game:
+      1. the vanilla anchors zWYU depends on still exist (OpportunityAnchor.Verify);
+      2. every Harmony patch zWYU declares applies successfully (Harmony really patches the real Assembly-CSharp, the replacement
+         methods are generated and JIT-compiled) and produces exactly the documented patch map;
+      3. a patch that cannot apply disables only its own feature and reports why (the failure-safety path).
+
+    It needs the game's Managed folder (never committed). Give it as the managed argument (see Program.cs) or set RIMWORLD_MANAGED_DIR.
+    Usage: build zWYU with RimWorldManagedDir set, then run this project (see docs/TESTING.md for the exact commands).
+  -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>10.0</LangVersion>
+    <Nullable>disable</Nullable>
+    <RootNamespace>zWYU.PatchAudit</RootNamespace>
+    <ImplicitUsings>disable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Lib.Harmony" Version="2.4.1" />
+  </ItemGroup>
+
+</Project>

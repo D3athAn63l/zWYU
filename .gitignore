@@ -1,0 +1,22 @@
+# Build output. The assembly is produced by the build (see README) and attached by CI; never committed.
+1.6/Assemblies/*
+!1.6/Assemblies/.gitkeep
+**/bin/
+**/obj/
+*.pdb
+*.user
+*.suo
+.vs/
+.idea/
+.vscode/
+*.DotSettings.user
+TestResults/
+
+# Never commit game or Harmony binaries (Ludeon assemblies, Unity, 0Harmony).
+Managed/
+*Assembly-CSharp*.dll
+UnityEngine*.dll
+0Harmony.dll
+
+# Local, machine-specific build overrides
+Source/Directory.Build.props.user
