@@ -5,10 +5,11 @@
 //
 // 1.6 changes that matter here:
 //   * `PathFinder.FindPath(...)` no longer exists; the synchronous entry point is `FindPathNow(start, target, traverseParms, tuning, peMode, ...)`.
-//   * An unsuccessful search is `PawnPath.NotFound` with a NEGATIVE cost and `Found == false`. The original treated
-//     "cost == 0" as failure (its old NotFound path had cost 0); the port therefore tests `Found`, never the cost value.
-//   * A path of zero length is reported as not found, so "the start already satisfies the end condition" (pawn already touching
-//     the target) is decided first with ReachabilityImmediate and costs 0 - it is the best possible leg, not a failure.
+//   * An unsuccessful search is `PawnPath.NotFound` with a NEGATIVE cost (-1) and `Found == false` - in the 1.4 binaries too. The original
+//     tested `TotalCost == 0`, which in 1.4 meant "zero-length path (start already satisfies the end mode)" and did NOT catch NotFound.
+//     It evidently meant "no path"; the port tests `Found`, never the cost value (docs/PORTING_NOTES.md section 3 and deviation 9).
+//   * 1.6 reports an EMPTY path as not found, so "the start already satisfies the end condition" (pawn already touching the target) is
+//     decided first with ReachabilityImmediate and costs 0 - it is the best possible leg and is ACCEPTED, where the original rejected it.
 
 using System.Diagnostics;
 using RimWorld;

@@ -5,7 +5,7 @@
 //
 // The original spliced its call into vanilla's ResourceDeliverJobFor right after `FindAvailableNearbyResources`, and there it saw
 //   * `need`             : the material the builder is about to fetch, with `need.count` = how much of it is CURRENTLY still needed
-//                          (in 1.4 the loop ran over `MaterialsNeeded()`, i.e. the remaining materials, not the total cost);
+//                          (verified in the 1.4 binaries: the loop ran over `MaterialsNeeded()`, i.e. the remaining materials, not the total cost);
 //   * `resourcesAvailable`: the FULL list of candidate stacks vanilla had just collected (the chosen stack first, then same-def stacks
 //                          within 5 cells, until a carrying load is reached) - BEFORE vanilla trimmed it to build the delivery job.
 // and decided:  "haul the LARGEST candidate stack to nearer storage, but only if it is larger than what is currently needed".

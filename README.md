@@ -27,7 +27,7 @@ Skipped: ordinary opportunities while bleeding or preparing a caravan; anything 
 * **Pick Up And Haul+ enhancements** (multi-item hauls, efficient unloading order, same-priority-storage hack). PUAH itself keeps working; zWYU coexists
   (it starts no detour for a pawn that still carries PUAH-hauled inventory). Reasons and details: [`docs/PORTING_NOTES.md`](docs/PORTING_NOTES.md#pick-up-and-haul).
 * Any optimization, caching, spatial indexing, or route planning (see *Future optimization candidates* in the notes — observations only).
-* Hauling into non-cell containers (vanilla's `HaulToContainer` destinations). The original never did either.
+* Hauling into non-cell containers (vanilla's `HaulToContainer` destinations). The original never did either — its vanilla (1.4) had no container opportunism to replace. In 1.6 vanilla does, so **while zWYU's opportunity feature is on, vanilla's own container opportunism is not used** (details: [`docs/PORTING_NOTES.md`](docs/PORTING_NOTES.md), §3).
 
 ## Install
 

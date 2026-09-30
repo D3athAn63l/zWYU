@@ -3,7 +3,8 @@
 // Ported from While You're Up's `Opportunity_Job` / `CanHaul` / `MaxRanges` (OpportunityDetour.cs, WYU 4.0.4),
 // Copyright (C) 2020 Christopher S. Galpin. The candidate-selection rules and control flow are the original's (this baseline exists to
 // study their exact semantics); the differences are listed here so that none is hidden:
-//   * 1.6 storage-worker checks in StorageSearch, and 1.6 pathfinding semantics in PathCosts (`Found`, "already touching" costs 0);
+//   * 1.6 storage-worker checks in StorageSearch, and pathfinding semantics in PathCosts (`Found` instead of `TotalCost == 0`; an "already
+//     touching" leg costs 0 and is accepted - both differ from the original's literal check, see docs/PORTING_NOTES.md deviation 9);
 //   * a candidate that is not spawned is dropped first (a haulable held by a container has no position to measure from);
 //   * MaxRangeExpansions: a TERMINATION GUARD on the range-expansion passes (the original ended by float overflow). It is not a candidate
 //     budget; a unit test proves it cannot cut off a legitimate candidate on any supported map size;
