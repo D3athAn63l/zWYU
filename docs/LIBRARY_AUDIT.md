@@ -5,7 +5,7 @@ The original mod referenced it as a project and ILRepack-merged it (internalized
 
 **Finding worth knowing:** WYU 4.0.4 (`1c54e7c`, Aug 2023) does **not** build from the public library snapshot (Jun 2023). It uses
 `NonThingFilter`, `Listing_TreeNonThingFilter`, `NonThingFilter_LoadingContext` (the library only has the older `SettingsThingFilter` variants) and
-`WeakDictionary`, none of which exist in the public library, and its translation files use `Label_*/Tooltip_*` keys where the library's `Gui` expects `SettingTitle_*/SettingDesc_*`.
+`WeakDictionary`, none of which exist in the public library (they **are** present in the original's shipped 1.4 / 1.5 DLLs, which contain a newer library build; see `PORTING_NOTES.md` §12.1), and its translation files use `Label_*/Tooltip_*` keys where the library's `Gui` expects `SettingTitle_*/SettingDesc_*`.
 So the "merge the upstream library" route was not available even before RimWorld 1.6; the dependency had to be re-derived from *use*.
 
 ## Dependency graph (used by WYU → library)
