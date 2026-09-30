@@ -10,8 +10,9 @@
 //                          within 5 cells, until a carrying load is reached) - BEFORE vanilla trimmed it to build the delivery job.
 // and decided:  "haul the LARGEST candidate stack to nearer storage, but only if it is larger than what is currently needed".
 //
-// RimWorld 1.6 no longer hands `need.count` over as the current need: the loop runs over TotalMaterialCost() and computes the current need
-// separately (`num`). See BeforeCarry.TryCreateForSupply and docs/PORTING_NOTES.md §4 for how each input is obtained now.
+// Since RimWorld 1.5 (and in 1.6) `need.count` is no longer the current need: the loop runs over TotalMaterialCost() and computes the current need
+// separately (`num`). The last shipped original (4.0.6 on 1.5) therefore compared against the WHOLE cost by accident; zWYU keeps the 4.0.4 rule
+// (remaining need). See BeforeCarry.TryCreateForSupply and docs/PORTING_NOTES.md §4 and §12.2 for how each input is obtained now.
 
 using System.Collections.Generic;
 

@@ -103,6 +103,8 @@ Log check for each: the summary line shows the reason under `Reject events: …`
 | T-5.6 | Install/reinstall (minified furniture) a building. | Vanilla behavior (install jobs are excluded). |
 | T-5.7 | Turn **Haul extra construction supplies closer** off. | Behavior returns to vanilla for supplies immediately. |
 | T-5.8 | **Two builders deliver to the same frame** at once (vanilla tracks in-flight deliveries: `IHaulEnroute`). | No errors; detours are judged against the space *remaining with enroute deliveries*, so a builder whose material is already being delivered by someone else is not sent to haul extras for it. |
+| T-5.9 | **Builder already carrying the needed material** (queue orders with Shift so a hauled stack is still in hands when the next delivery is chosen; another, larger stack of the same material lies within ~5 cells). | Watch the log: no detour is expected when the carried stack is the largest; if a detour *is* issued for the nearby stack, note that the carried stack is dropped first (documented risk 4). No red errors either way. |
+| T-5.10 | **Floor under a blueprint must be removed first** (a blueprint placed over a floor that vanilla would remove before delivering; large supply stack nearby). | Vanilla's remove-floor work happens first; no zWYU errors; the haul-closer decision may come on the next think. (The original could haul first; this is documented deviation 15.) |
 
 ## 6. Bills
 

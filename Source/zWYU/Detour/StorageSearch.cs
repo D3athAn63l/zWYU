@@ -8,9 +8,9 @@
 // where the pawn is really going; and it can (for haul-before-carry) accept equal-priority storage and applies the user's
 // stockpile / storage-building filters.
 //
-// Ported to 1.6 by re-deriving it from vanilla 1.6's `TryFindBestBetterStoreCellFor` + `...ForWorker`, which gained:
-//   * only slot groups whose parent is not a foreign-faction Thing and whose `HaulDestinationEnabled` is true;
-//   * acceptance via `slotGroup.Settings.AllowedToAccept(thing)` (the original copied the pre-refactor `parent.Accepts`).
+// Ported to 1.6 by re-deriving it from vanilla 1.6's `TryFindBestBetterStoreCellFor` + `...ForWorker` (the worker split itself already exists in 1.4), which since 1.4 gained:
+//   * acceptance via `slotGroup.Settings.AllowedToAccept(thing)` (the original copied 1.4's `parent.Accepts`; vanilla changed it in 1.5);
+//   * in 1.6: only slot groups whose parent is not a foreign-faction Thing and whose `HaulDestinationEnabled` is true.
 // Both are applied here, otherwise zWYU could pick storage vanilla itself refuses.
 
 using System;

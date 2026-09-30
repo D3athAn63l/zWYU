@@ -7,7 +7,8 @@
 // job, consider hauling the largest nearby stack of that resource to storage nearer the site first - but only if that stack is larger
 // than what is currently needed."
 // The original spliced its call in after `FindAvailableNearbyResources`, reaching into a compiler-generated closure class for the
-// `need` local and into IL local slots for `job`/`foundRes`. In 1.6 the method is again restructured around closures.
+// `need` local and into IL local slots for `job`/`foundRes` (1.4); the shipped 1.5 build re-anchored on the closure fields `need`/`foundRes` after 1.5 restructured
+// the method, and 1.6 keeps the 1.5 shape.
 //
 // The 1.6 hook is a Postfix on ResourceDeliverJobFor that may REPLACE the returned job. What it takes from vanilla's result is only
 // `targetA` (the resource vanilla selected) and the fact that a real HaulToContainer delivery job exists. It deliberately does NOT
