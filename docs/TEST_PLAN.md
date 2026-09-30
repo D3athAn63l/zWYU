@@ -16,6 +16,8 @@ RimWorld's Dev mode.
 **Reading the report text** on a pawn's info tab / hover: *"Hauling steel to Stockpile **on the way to** Bill Bench."* = an **Opportunity**;
 *"…, headed **closer to** Wall."* = **haul-before-carry** (supplies/ingredients). Plain vanilla text = an ordinary haul.
 
+**Not runtime-testable by hand:** ownership of the search context under nested/re-entrant `TryOpportunisticJob` calls (vanilla never re-enters it) is covered by `Source/zWYU.PatchAudit` (§5), including a genuinely nested call through the patched game method.
+
 **What a healthy Summary log looks like** (one pawn, one opportunity):
 
 ```
@@ -55,11 +57,13 @@ Arrange: a stockpile (Normal or higher) and **loose items** (e.g. `Spawn thing` 
 | T-2.2 | Same, with the colored-path debug on. | Lines: red = original path, green = new legs; cells flash (start green, haulable cyan, storage orange, job red). |
 | T-2.3 | Repeat with several loose stacks near the route. | One stack per decision; after the haul, vanilla resumes the job and may pick another opportunity (chains are vanilla-consistent). **No pawn takes two hauls in the same tick** (log: never two `SELECTED` for one pawn at the same tick). |
 | T-2.4 | Switch **Path checking** between *Vanilla*, *Default*, *Pathfinding* and repeat T-2.1. | All three work. *Pathfinding* finds hauls *Default* rejects only for candidates that need a real path check; watch frame rate on a large map. |
-| T-2.5 | Tweak **Advanced** limits (e.g. total trip 100%) and repeat. | Fewer/farther opportunities respectively; log summary shows `Rejected: …` reasons that match. |
+| T-2.5 | Tweak **Advanced** limits (e.g. total trip 100%) and repeat. | Fewer/farther opportunities respectively; log summary shows `Reject events: …` reasons that match. |
+| T-2.6 | **Pathfind during search, many failing candidates:** scatter 15+ loose stacks that pass the cheap checks but are unreachable/behind walls (path check fails), and put one perfectly reachable stack on the route. | The reachable stack is still found — **there is no limit on how many candidates are examined**. The Summary line shows `path checks N (Q synchronous path queries, T ms)`; expect cost to grow with N (a documented, deliberately unoptimized concern). |
+| T-2.7 | **Default** mode with the same scatter, where the *first* candidate examined fails its single pathfind. | The whole search ends with no opportunity (`stopped: PathUnreachable …`) — the original "pathfind once after search" behavior. |
 
 ## 3. Negative cases (expect **no** detour, normal behavior, no errors)
 
-Log check for each: the summary line shows the reason under `Rejected: …` (or Verbose shows the candidate).
+Log check for each: the summary line shows the reason under `Reject events: …` (or Verbose shows the candidate).
 
 | ID | Setup | Expected |
 |---|---|---|
@@ -89,12 +93,16 @@ Log check for each: the summary line shows the reason under `Rejected: …` (or 
 | ID | Steps | Expected |
 |---|---|---|
 | T-5.1 | Blueprint a wall 40+ cells from a **large stack** (e.g. 300 steel) lying near the builder, with a stockpile between them (or near the wall). A builder with Construction and (for the test) Hauling *disabled*. | Report *"…, headed **closer to** Wall."* The builder first hauls the stack (extras included) to storage nearer the site, then delivers and builds. Supplies get delivered; the wall gets built. |
-| T-5.2 | Same, but the stack is **no larger than the wall's whole cost**. | **No** haul-closer (the "only if there are extras" rule). Vanilla delivery. |
-| T-5.3 | **Partial materials**: a frame already partly supplied; needs a second material (e.g. steel + components). | No stuck states; each material is handled in turn; construction completes. |
+| T-5.2 | Same, but the largest nearby stack is **no larger than what is still needed** (for an untouched blueprint that is the whole cost). | **No** haul-closer (the "only if there are extras" rule is strict: stack must be **larger than** the current need). Vanilla delivery. |
+| T-5.3 | **Partial materials — the decision uses what is STILL needed, not the total cost.** Pick a construction whose material total is well above a stack size you can spawn (e.g. a large steel building), let a builder deliver until **M** remain (read *Materials needed* on the frame), then have a *different* builder about to fetch it with a **loose stack S in the open, M < S ≤ total cost**, storage between it and the frame, and no larger stack nearby. | **Haul-closer happens** ("…, headed closer to Frame"): S > M. *(The first version of this port wrongly compared S to the total cost and would have declined.)* Log (Verbose): `supply candidate … vs current need M`. |
+| T-5.3b | Same, but adjust so that **S == M exactly**. | **No** haul-closer (strict `>`): log `no extras … largest of N nearby stacks is M, current need M`. |
+| T-5.3c | **Several stacks near the selected resource:** the closest stack is small, a **larger stack** lies within ~5 cells of it (and vanilla would not need it to fill the builder's load). | The **larger** stack is the one hauled toward the site ("largest of N nearby stacks" in the Verbose log), not the closest/selected one. |
+| T-5.3d | A frame that needs **two materials** (e.g. steel + components), one already complete. | Each material is handled in turn; only the still-needed material can trigger a detour; no stuck states; construction completes. |
 | T-5.4 | **Construction completes/canceled while the pawn is choosing** (deconstruct/cancel the blueprint right as a builder is assigned; use *Tick* stepping). | No error; the pawn moves on. |
 | T-5.5 | Order a **right-click "Prioritize delivering"** on a blueprint. | The player's order is never redirected into a detour (forced orders are excluded). |
 | T-5.6 | Install/reinstall (minified furniture) a building. | Vanilla behavior (install jobs are excluded). |
 | T-5.7 | Turn **Haul extra construction supplies closer** off. | Behavior returns to vanilla for supplies immediately. |
+| T-5.8 | **Two builders deliver to the same frame** at once (vanilla tracks in-flight deliveries: `IHaulEnroute`). | No errors; detours are judged against the space *remaining with enroute deliveries*, so a builder whose material is already being delivered by someone else is not sent to haul extras for it. |
 
 ## 6. Bills
 

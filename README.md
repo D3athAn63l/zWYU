@@ -69,7 +69,7 @@ Output: `1.6/Assemblies/zWYU.dll` (git-ignored). Harmony is compile-only; at run
 ```sh
 dotnet test Source/zWYU.Tests            # rules, defaults, licensing/metadata/translation/no-transpiler invariants (no game needed; runs in CI)
 
-# needs the game's Managed folder; proves every patch applies to the REAL assembly and the hooks behave (37 checks)
+# needs the game's Managed folder; proves every patch applies to the REAL assembly and the hooks behave (60+ checks: anchors, every patch, the patch map, failure isolation, nested/re-entrant ownership, supply plumbing)
 dotnet build Source/zWYU/zWYU.csproj -c Release -p:RimWorldManagedDir="<Managed>"
 dotnet run --project Source/zWYU.PatchAudit -c Release -- --managed "<Managed>"
 ```
